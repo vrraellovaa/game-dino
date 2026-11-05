@@ -1,0 +1,19 @@
+{
+  "name": "jurassic-adventure-dino-run",
+  "version": "1.0.0",
+  "description": "Jurassic Adventure: Hand-Controlled Dino Run - 8-bit retro pixel art endless runner controlled with webcam hand tracking",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@mediapipe/tasks-vision": "^0.10.14",
+    "phaser": "^3.88.2"
+  },
+  "devDependencies": {
+    "vite": "^6.2.0"
+  }
+}
+

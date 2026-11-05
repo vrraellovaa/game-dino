@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jurassic Adventure: Hand-Controlled Dino Run</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./src/style.css" />
+</head>
+<body>
+  <div id="game-app">
+    <!-- Top Header -->
+    <header id="arcade-header">
+      <div class="header-left">
+        <span class="pixel-badge">🦖 8-BIT RETRO</span>
+        <span class="title-text">JURASSIC ADVENTURE</span>
+      </div>
+      <div class="header-right">
+        <button id="btn-open-settings" class="retro-btn btn-sm">⚙ SETTINGS</button>
+        <button id="btn-open-help" class="retro-btn btn-sm">❓ HOW TO PLAY</button>
+      </div>
+    </header>
+
+    <!-- Game Viewport Container -->
+    <div id="viewport-wrapper">
+      <div id="game-container"></div>
+
+      <!-- Scanline CRT Effect Overlay -->
+      <div id="scanline-overlay"></div>
+
+      <!-- In-Game HUD Overlay -->
+      <div id="game-hud" style="display: none;">
+        <div class="hud-top-left">
+          <div class="hud-item score-box">
+            <span class="hud-label">SCORE</span>
+            <span id="hud-score" class="hud-val">00000</span>
+          </div>
+          <div class="hud-item hiscore-box">
+            <span id="hud-highscore" class="hud-val-accent">HI 00000</span>
+          </div>
+        </div>
+
+        <div class="hud-top-center">
+          <div class="hud-item speed-box">
+            <span class="hud-label">SPEED</span>
+            <span id="hud-speed" class="hud-val">1.0x</span>
+          </div>
+          <div id="hud-milestone-banner" class="milestone-banner"></div>
+        </div>
+
+        <div class="hud-top-right">
+          <button id="hud-pause-btn" class="retro-btn btn-xs">❚❚ PAUSE</button>
+        </div>
+      </div>
+
+      <!-- Bottom Gesture Indicator Pill -->
+      <div id="hud-gesture-hint" class="gesture-status-bar">
+        <span>GESTURE: </span>
+        <span id="current-gesture-name">NO HAND DETECTED</span>
+      </div>
+
+      <!-- Camera Live Preview Box (Top-Right / Floating) -->
+      <div id="camera-preview-box">
+        <div class="preview-header">
+          <div class="cam-status-row">
+            <span id="camera-status-badge" class="badge badge-warning">CAM OFF</span>
+            <span id="camera-fps-badge" class="badge badge-fps">0 FPS</span>
+          </div>
+        </div>
+
+        <div class="preview-viewport">
+          <video id="webcam-video" autoplay playsinline muted></video>
+          <canvas id="webcam-canvas" width="160" height="120"></canvas>
+          <div class="corner-accents"></div>
+        </div>
+
+        <div class="preview-footer">
+          <div id="camera-gesture-badge" class="badge badge-danger">NO HAND</div>
+          <button id="camera-toggle-btn" class="retro-btn btn-xs">ENABLE CAM</button>
+        </div>
+      </div>
+
+      <!-- Error / Warning Alert Banner -->
+      <div id="error-banner" class="retro-alert" style="display: none;"></div>
+    </div>
+
+    <!-- Pause Modal -->
+    <div id="pause-modal" class="modal-backdrop" style="display: none;">
+      <div class="retro-dialog">
+        <h2 class="dialog-title text-warning">PAUSED</h2>
+        <p class="dialog-desc">Game is currently paused.</p>
+        <div class="dialog-buttons">
+          <button id="btn-pause-resume" class="retro-btn btn-success">▶ RESUME (OPEN PALM)</button>
+          <button id="btn-pause-restart" class="retro-btn btn-primary">↻ RESTART</button>
+          <button id="btn-pause-menu" class="retro-btn btn-danger">⌂ MAIN MENU</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal-backdrop" style="display: none;">
+      <div class="retro-dialog">
+        <h2 class="dialog-title">GAME SETTINGS</h2>
+
+        <div class="settings-group">
+          <div class="setting-row">
+            <label for="setting-music-toggle">Music BGM:</label>
+            <input type="checkbox" id="setting-music-toggle" checked />
+          </div>
+          <div class="setting-row">
+            <label for="setting-music-vol">Music Volume:</label>
+            <input type="range" id="setting-music-vol" min="0" max="100" value="50" />
+          </div>
+
+          <div class="setting-row">
+            <label for="setting-sfx-toggle">Sound Effects:</label>
+            <input type="checkbox" id="setting-sfx-toggle" checked />
+          </div>
+          <div class="setting-row">
+            <label for="setting-sfx-vol">SFX Volume:</label>
+            <input type="range" id="setting-sfx-vol" min="0" max="100" value="80" />
+          </div>
+
+          <div class="setting-row">
+            <label for="setting-cam-toggle">Show Camera Preview:</label>
+            <input type="checkbox" id="setting-cam-toggle" checked />
+          </div>
+
+          <div class="setting-row">
+            <label for="setting-sensitivity">Gesture Sensitivity:</label>
+            <select id="setting-sensitivity" class="retro-select">
+              <option value="relaxed">Relaxed (Easy trigger)</option>
+              <option value="normal" selected>Normal (Recommended)</option>
+              <option value="sensitive">Sensitive (Precise)</option>
+            </select>
+          </div>
+
+          <div class="setting-row">
+            <label for="setting-scanlines-toggle">CRT Scanlines Effect:</label>
+            <input type="checkbox" id="setting-scanlines-toggle" />
+          </div>
+        </div>
+
+        <div class="dialog-buttons">
+          <button id="settings-close-btn" class="retro-btn btn-success">✔ SAVE & CLOSE</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- How To Play Modal -->
+    <div id="how-to-play-modal" class="modal-backdrop" style="display: none;">
+      <div class="retro-dialog dialog-wide">
+        <h2 class="dialog-title text-success">HOW TO PLAY</h2>
+
+        <div class="guide-grid">
+          <div class="guide-card">
+            <div class="guide-icon">✋</div>
+            <h3 class="guide-action">OPEN PALM</h3>
+            <p class="guide-text">Open hand with fingers spread to <strong>START GAME</strong>, <strong>CONFIRM</strong>, or <strong>RESUME</strong>.</p>
+          </div>
+
+          <div class="guide-card">
+            <div class="guide-icon">☝️</div>
+            <h3 class="guide-action">INDEX FINGER UP</h3>
+            <p class="guide-text">Raise index finger up to <strong>JUMP</strong> over rocks, cycads, logs, and dinosaur fossils.</p>
+          </div>
+
+          <div class="guide-card">
+            <div class="guide-icon">✊</div>
+            <h3 class="guide-action">CLOSED FIST</h3>
+            <p class="guide-text">Make a tight fist to <strong>DUCK</strong> underneath low-flying pterodactyls.</p>
+          </div>
+        </div>
+
+        <div class="guide-keyboard-note">
+          <p>⌨ <strong>Keyboard Fallback:</strong> [SPACE / UP] Jump | [DOWN] Duck | [ENTER] Start/Resume | [P / ESC] Pause</p>
+        </div>
+
+        <div class="dialog-buttons">
+          <button id="btn-close-help" class="retro-btn btn-primary">GOT IT!</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Status -->
+    <footer id="arcade-footer">
+      <span>AI-Powered Computer Vision Hand Tracking • MediaPipe & Phaser 3</span>
+      <span class="footer-tip">💡 Tip: Position hand 40-70cm from camera with good lighting</span>
+    </footer>
+  </div>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
+

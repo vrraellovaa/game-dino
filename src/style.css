@@ -1,0 +1,562 @@
+/* ========================================================
+   JURASSIC ADVENTURE: RETRO 8-BIT ARCADE STYLES
+   ======================================================== */
+
+:root {
+  --color-bg-dark: #090d16;
+  --color-arcade-frame: #1e293b;
+  --color-green-primary: #16a34a;
+  --color-green-neon: #22c55e;
+  --color-green-light: #4ade80;
+  --color-amber-gold: #f59e0b;
+  --color-yellow-bright: #fef08a;
+  --color-red-danger: #ef4444;
+  --color-blue-cyan: #38bdf8;
+  --color-sand: #fef3c7;
+  --color-stone: #334155;
+  --font-retro: 'Press Start 2P', 'VT323', 'Courier New', monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+}
+
+body {
+  background-color: var(--color-bg-dark);
+  color: #f8fafc;
+  font-family: var(--font-retro);
+  overflow-x: hidden;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#game-app {
+  width: 100%;
+  max-width: 960px;
+  margin: 10px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px;
+}
+
+/* --- Header --- */
+#arcade-header {
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  background-color: #1e293b;
+  border: 3px solid #334155;
+  box-shadow: 0 4px 0 #0f172a;
+  margin-bottom: 8px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pixel-badge {
+  background-color: var(--color-green-primary);
+  color: #ffffff;
+  font-size: 8px;
+  padding: 4px 6px;
+  border: 2px solid #000;
+}
+
+.title-text {
+  font-size: 13px;
+  color: var(--color-yellow-bright);
+  text-shadow: 2px 2px 0 #451a03;
+}
+
+.header-right {
+  display: flex;
+  gap: 8px;
+}
+
+/* --- Viewport Wrapper --- */
+#viewport-wrapper {
+  position: relative;
+  width: 800px;
+  height: 450px;
+  background-color: #000000;
+  border: 4px solid #475569;
+  box-shadow: 0 8px 0 #0f172a, 0 16px 24px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+  image-rendering: pixelated;
+}
+
+#game-container canvas {
+  display: block;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  width: 800px !important;
+  height: 450px !important;
+}
+
+/* --- CRT Scanline Overlay --- */
+#scanline-overlay {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%,
+    rgba(0, 0, 0, 0.35) 50%
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* --- In-Game HUD --- */
+#game-hud {
+  position: absolute;
+  top: 10px;
+  left: 14px;
+  right: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.hud-top-left {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hud-item {
+  background-color: rgba(15, 23, 42, 0.85);
+  border: 2px solid #475569;
+  padding: 4px 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 2px 2px 0 #000;
+}
+
+.hud-label {
+  font-size: 8px;
+  color: #94a3b8;
+}
+
+.hud-val {
+  font-size: 11px;
+  color: #ffffff;
+}
+
+.hud-val-accent {
+  font-size: 10px;
+  color: var(--color-amber-gold);
+}
+
+.hud-top-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.milestone-banner {
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: all 0.25s ease;
+  font-size: 11px;
+  color: var(--color-yellow-bright);
+  background-color: rgba(22, 163, 74, 0.9);
+  padding: 4px 10px;
+  border: 2px solid #fff;
+  margin-top: 6px;
+  box-shadow: 0 0 12px var(--color-green-neon);
+}
+
+.milestone-banner.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hud-top-right {
+  pointer-events: auto;
+}
+
+/* --- Gesture Status Pill (Bottom) --- */
+.gesture-status-bar {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(15, 23, 42, 0.88);
+  border: 2px solid #38bdf8;
+  padding: 6px 14px;
+  font-size: 9px;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 0 #000;
+  z-index: 20;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.gesture-status-bar.pulse {
+  border-color: var(--color-green-neon);
+  box-shadow: 0 0 10px var(--color-green-neon);
+}
+
+/* --- Camera Preview Box (Top-Right / Floating) --- */
+#camera-preview-box {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 172px;
+  background-color: rgba(15, 23, 42, 0.92);
+  border: 3px solid #5c3317; /* Prehistoric wooden/stone frame */
+  box-shadow: 3px 3px 0 #000, 0 0 10px rgba(0, 0, 0, 0.8);
+  display: flex;
+  flex-direction: column;
+  padding: 4px;
+  z-index: 25;
+}
+
+.preview-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.cam-status-row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.preview-viewport {
+  position: relative;
+  width: 160px;
+  height: 120px;
+  background-color: #020617;
+  border: 2px solid #334155;
+  overflow: hidden;
+}
+
+#webcam-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1); /* Mirror camera for natural movement */
+}
+
+#webcam-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.corner-accents {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 1px dashed rgba(56, 189, 248, 0.4);
+  pointer-events: none;
+}
+
+.preview-footer {
+  margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* --- Badges --- */
+.badge {
+  font-size: 7px;
+  padding: 3px 4px;
+  border-radius: 0;
+  border: 1px solid #000;
+  text-align: center;
+  font-family: var(--font-retro);
+}
+
+.badge-success {
+  background-color: #15803d;
+  color: #86efac;
+}
+
+.badge-warning {
+  background-color: #854d0e;
+  color: #fde047;
+}
+
+.badge-danger {
+  background-color: #991b1b;
+  color: #fca5a5;
+}
+
+.badge-primary {
+  background-color: #0369a1;
+  color: #7dd3fc;
+}
+
+.badge-accent {
+  background-color: #7e22ce;
+  color: #e9d5ff;
+}
+
+.badge-fps {
+  background-color: #1e293b;
+  color: #94a3b8;
+}
+
+/* --- Buttons --- */
+.retro-btn {
+  font-family: var(--font-retro);
+  background-color: #334155;
+  color: #ffffff;
+  border: 2px solid #000;
+  box-shadow: 2px 2px 0 #0f172a;
+  cursor: pointer;
+  padding: 8px 12px;
+  font-size: 9px;
+  transition: transform 0.05s ease, background-color 0.1s;
+}
+
+.retro-btn:hover {
+  filter: brightness(1.15);
+}
+
+.retro-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0 0 0;
+}
+
+.btn-xs {
+  font-size: 7px;
+  padding: 4px 6px;
+}
+
+.btn-sm {
+  font-size: 8px;
+  padding: 6px 10px;
+}
+
+.btn-success {
+  background-color: var(--color-green-primary);
+  border-color: #0f2415;
+}
+
+.btn-primary {
+  background-color: #0284c7;
+  border-color: #082f49;
+}
+
+.btn-danger {
+  background-color: #dc2626;
+  border-color: #450a0a;
+}
+
+/* --- Retro Alert / Notification --- */
+.retro-alert {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(220, 38, 38, 0.95);
+  border: 2px solid #fecaca;
+  padding: 8px 16px;
+  color: #ffffff;
+  font-size: 9px;
+  box-shadow: 0 4px 0 #000;
+  z-index: 50;
+  text-align: center;
+  max-width: 90%;
+}
+
+/* --- Modals & Dialogs --- */
+.modal-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(2, 6, 23, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.retro-dialog {
+  background-color: #1e293b;
+  border: 4px solid #475569;
+  box-shadow: 6px 6px 0 #000;
+  padding: 24px;
+  width: 90%;
+  max-width: 480px;
+  text-align: center;
+}
+
+.dialog-wide {
+  max-width: 650px;
+}
+
+.dialog-title {
+  font-size: 16px;
+  color: var(--color-yellow-bright);
+  margin-bottom: 16px;
+  text-shadow: 2px 2px 0 #000;
+}
+
+.dialog-desc {
+  font-size: 9px;
+  color: #94a3b8;
+  margin-bottom: 20px;
+}
+
+.dialog-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.text-warning {
+  color: var(--color-amber-gold);
+}
+
+.text-success {
+  color: var(--color-green-light);
+}
+
+/* --- Settings Form --- */
+.settings-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: left;
+  margin: 16px 0;
+  background-color: #0f172a;
+  padding: 14px;
+  border: 2px solid #334155;
+}
+
+.setting-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 9px;
+  color: #e2e8f0;
+}
+
+.setting-row input[type="range"] {
+  width: 120px;
+  accent-color: var(--color-green-neon);
+}
+
+.setting-row input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-green-neon);
+  cursor: pointer;
+}
+
+.retro-select {
+  background-color: #1e293b;
+  color: #ffffff;
+  border: 2px solid #475569;
+  font-family: var(--font-retro);
+  font-size: 8px;
+  padding: 4px 6px;
+}
+
+/* --- How To Play Cards --- */
+.guide-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.guide-card {
+  background-color: #0f172a;
+  border: 2px solid #334155;
+  padding: 12px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.guide-icon {
+  font-size: 28px;
+}
+
+.guide-action {
+  font-size: 9px;
+  color: var(--color-yellow-bright);
+}
+
+.guide-text {
+  font-size: 8px;
+  color: #94a3b8;
+  line-height: 1.4;
+}
+
+.guide-keyboard-note {
+  background-color: #0f172a;
+  border: 1px solid #334155;
+  padding: 8px;
+  font-size: 8px;
+  color: #38bdf8;
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+/* --- Footer --- */
+#arcade-footer {
+  margin-top: 10px;
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 8px;
+  color: #64748b;
+  padding: 4px 8px;
+}
+
+.footer-tip {
+  color: #94a3b8;
+}
+
+/* Responsive scale down for tablet / small desktop */
+@media (max-width: 840px) {
+  #viewport-wrapper {
+    transform: scale(0.9);
+    transform-origin: top center;
+  }
+}
+
