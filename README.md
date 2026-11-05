@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🦖 JURASSIC ADVENTURE: HAND-CONTROLLED DINO RUN
 
 An authentic 8-bit retro pixel art 2D endless runner where you control a prehistoric dinosaur entirely with real-time hand gestures tracked through your webcam using Google MediaPipe and Phaser 3.
@@ -133,3 +134,6 @@ npm run preview
 - **100% Client-Side:** All webcam video frames and hand landmark predictions are processed exclusively inside your browser using WebAssembly. No video, audio, or landmark data is ever stored or transmitted to external servers.
 - **Independent Loops:** Hand tracking runs decoupled on `requestAnimationFrame` from the Phaser 60 FPS game loop, ensuring silky smooth gameplay and zero input stutter.
 
+=======
+# game-dino
+>>>>>>> 6f52b9b2032d90a65783e4ed87b00c577d84a5ab
